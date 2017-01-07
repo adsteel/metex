@@ -13,5 +13,5 @@ Usage:
 $ iex -S mix
 > cities = ["ann arbor, mi", "denver, CO", "verkhoyansk, Russia"]
 > Metex.Coordinator.retrieve_temps(cities)
-%{"Ann Arbor" => 3.9, "Denver" => 5.1, "Verkhoyansk" => -44.4}
+[{-11.5, "Ann Arbor"}, {-7.9, "Denver"}, {-37.2, "Verkhoyansk"}]
 ```

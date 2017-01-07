@@ -1,36 +1,9 @@
 defmodule Metex.Worker do
-  use GenServer
-
   @apikey System.get_env("OPENWEATHERMAP_APIKEY")
 
-  ## Client API
-
-  def start_link(opts \\ []) do
-    GenServer.start_link(__MODULE__, :ok, opts)
+  def fetch(location) do
+    Task.async(fn -> temperature_of(location) end)
   end
-
-  def fetch(coordinator_pid, location) do
-    {:ok, worker_pid} = start_link
-    GenServer.cast(worker_pid, {:fetch, :coordinator_pid, coordinator_pid, :location, location})
-  end
-
-  ## Server Callbacks
-
-  def init(:ok) do
-    {:ok, %{}}
-  end
-
-  def handle_cast({:fetch, :coordinator_pid, coordinator_pid, :location, location}, state) do
-    case temperature_of(location) do
-      {:ok, temp, city} ->
-        Metex.Coordinator.put(coordinator_pid, city, temp)
-        {:noreply, state}
-      _ ->
-        {:noreply, state}
-    end
-  end
-
-  ## Helper Functions
 
   defp temperature_of(location) do
     url_for(location) |> HTTPoison.get |> parse_response

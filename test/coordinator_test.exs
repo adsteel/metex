@@ -2,11 +2,14 @@ defmodule MetexCoordinatorTest do
   use ExUnit.Case
   doctest Metex.Coordinator
 
-  test "#retrieve_temps" do
-    cities = ["ann arbor, mi", "denver, CO", "verkhoyansk, Russia"]
-    temps = Metex.Coordinator.retrieve_temps(cities)
-    keys = Map.keys(temps) |> Enum.sort
+  @cities ["ann arbor, mi", "denver, CO", "verkhoyansk, Russia", "rio de janeiro, brazil"]
 
-    assert keys == ["Ann Arbor", "Denver", "Verkhoyansk"]
+  test "#retrieve_temps" do
+    results = @cities
+              |> Metex.Coordinator.retrieve_temps
+              |> Enum.map(fn (result) -> result.city end)
+              |> Enum.sort
+
+    assert results == ["Ann Arbor", "Denver", "Rio de Janeiro", "Verkhoyansk"]
   end
 end
